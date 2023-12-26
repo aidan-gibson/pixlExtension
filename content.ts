@@ -34,18 +34,46 @@ export const config: PlasmoCSConfig = {
 //     }
 //   }
 // }
+function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) );
+}
 //TODO make sure only inserts ONCE
+// yeet comments
+// turn url and querySelector paths into variables at top
+// make sure insertAdjacentHTML is the correct fnc to b using here
+// document.body.addEventListener('click', function(e) {
+//   const target = e.target as HTMLElement;
+//   if (target.getAttribute('role') === 'button' && target.getAttribute('gh') === 'cm') {
+//     alert('hi');
+    
+//     let div = document.querySelector('div[aria-label="Message Body"]');
+//     if (div) {
+//       alert('div found');
+//       div.insertAdjacentHTML('beforeend', '<img id="snvTrackImg" src="https://igafnl.com/track/1703560904723.png?eId=239511392&amp;eId2=1769716410" width="1" height="1" alt="">');
+//     }
+
+//   }
+// });
 document.body.addEventListener('click', function(e) {
   const target = e.target as HTMLElement;
   if (target.getAttribute('role') === 'button' && target.getAttribute('gh') === 'cm') {
     alert('hi');
-    setTimeout(() => {
-      // Your code here
+
+    // Create a MutationObserver instance
+    let observer = new MutationObserver((mutations) => {
+      // Try to find the div
       let div = document.querySelector('div[aria-label="Message Body"]');
+      
       if (div) {
+        // If the div is found, stop observing
+        observer.disconnect();
+
         alert('div found');
         div.insertAdjacentHTML('beforeend', '<img id="snvTrackImg" src="https://igafnl.com/track/1703560904723.png?eId=239511392&amp;eId2=1769716410" width="1" height="1" alt="">');
       }
-    }, 5000); // Wait for 5 seconds
+    });
+
+    // Start observing the document with the configured parameters
+    observer.observe(document, { childList: true, subtree: true });
   }
 });
