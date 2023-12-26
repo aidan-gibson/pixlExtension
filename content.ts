@@ -3,7 +3,7 @@ import type { PlasmoCSConfig } from "plasmo"
 export const config: PlasmoCSConfig = {
   matches: ["https://mail.google.com/*"],
 }
-
+const trackingPixel = '<img id="snvTrackImg" src="https://igafnl.com/track/1703560904723.png?eId=239511392&amp;eId2=1769716410" width="1" height="1" alt="">';
 document.body.addEventListener('click', function(e) {
   // On every click
   const target = e.target as HTMLElement;
@@ -16,7 +16,7 @@ document.body.addEventListener('click', function(e) {
     // Insert the HTML
     let div = document.querySelector('div[aria-label="Message Body"]');
     if (div) {
-      div.insertAdjacentHTML('beforeend', '<img id="snvTrackImg" src="https://igafnl.com/track/1703560904723.png?eId=239511392&amp;eId2=1769716410" width="1" height="1" alt="">');
+      div.insertAdjacentHTML('beforeend', trackingPixel);
       console.log("inserted!!!!!!!!!!!!!!!!!!!");
     }
     // target.click(); doesn't work to click (send) at this point
