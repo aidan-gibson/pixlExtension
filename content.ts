@@ -34,6 +34,7 @@ export const config: PlasmoCSConfig = {
 //     }
 //   }
 // }
+//TODO make sure only inserts ONCE
 document.body.addEventListener('click', function(e) {
   const target = e.target as HTMLElement;
   if (target.getAttribute('role') === 'button' && target.getAttribute('gh') === 'cm') {

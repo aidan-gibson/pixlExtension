@@ -11,5 +11,6 @@ Using Plasmo framework
 
 
 - match `https://mail.google.com/*`
-- add eventlistener for clicking compose
+- add eventlistener mouse click
+  - if u click on `target.getAttribute('role') === 'button' && target.getAttribute('gh') === 'cm'`...
 - insert html
