@@ -57,7 +57,7 @@ function delay(ms: number) {
 document.body.addEventListener('click', function(e) {
   const target = e.target as HTMLElement;
   if (target.getAttribute('role') === 'button' && target.getAttribute('gh') === 'cm') {
-    alert('hi');
+    alert('compose clicked');
 
     // Create a MutationObserver instance
     let observer = new MutationObserver((mutations) => {
