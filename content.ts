@@ -72,14 +72,7 @@ const observer = new MutationObserver((mutationsList, observer) => {
           observer.disconnect();
 
           const queryApi = new InfluxDB({url, token}).getQueryApi(org)
-          // const fluxQuery = `from(bucket:"pixl") |> range(start: -1000y) |> filter(fn: (r) => r._field == "path" and r._value == "${match[1]}")`
-          // const fluxQuery = `from(bucket:"pixl") |> range(start: -1000y) |> filter(fn: (r) => r._field == "path" and r._value == "${match[1]}") |> sort(columns: ["epoch"], desc: true)`
-          // TODO add filter filter by measurement "pixl" as well. delete other measurements
-          // const fluxQuery = `from(bucket:"pixl") 
-          //          |> range(start: -1000y) 
-          //          |> filter(fn: (r) => r._field == "path" and r._value == "${match[1]}") 
-          //          |> filter(fn: (r) => exists r.epoch) 
-          //          |> sort(columns: ["epoch"], desc: true)`
+
           const fluxQuery = `from(bucket:"pixl") 
                    |> range(start: -1000y)
                    |> filter(fn: (r) => r._measurement == "pixl") 
@@ -99,7 +92,9 @@ const observer = new MutationObserver((mutationsList, observer) => {
           }
           iterateRows()
 
-
+          // TODO UI insert
+          let UIselect = document.querySelector('div.hj');
+          UIselect.insertAdjacentHTML("afterbegin","<p>Tracked</p>");
 
 
           return;

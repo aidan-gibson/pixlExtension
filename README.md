@@ -44,6 +44,8 @@ within div dir="ltr", search https://pixl-server.vercel.app/ and get ID from tha
 <img id="m_4809587507988088509boo" src="https://ci3.googleusercontent.com/meips/ADKq_NaNE65hdXdYJLsSbR9Ka612qwMKBYwDYOGeBJHAHjBHFWkvoQmXluX2k2GzNh5CTnmMTRL5koeIBD8owRHOSKyzR3A=s0-d-e1-ft#https://pixl-server.vercel.app/1703760984.png" width="2" height="3" alt="" class="CToWUd" data-bit="iit">
 
 # todo
+* put dict in UI
+* don't count urself
 * don't load urself! don't want it to count as "read" / "accessed" if it's just me opening the email
 what about replies
 what if u hit Send but u don't have To field filled out, or if u don't have a subject and/or body?
