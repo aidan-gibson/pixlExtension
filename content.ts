@@ -1,5 +1,7 @@
 import type { PlasmoCSConfig } from "plasmo"
-
+import {InfluxDB} from '@influxdata/influxdb-client'
+import type { FluxTableMetaData } from '@influxdata/influxdb-client';
+import {url, token, org} from './env.mjs'
 export const config: PlasmoCSConfig = {
   matches: ["https://mail.google.com/*"],
 }
@@ -67,6 +69,40 @@ const observer = new MutationObserver((mutationsList, observer) => {
         if (match) {
           console.log(match[1]); // Outputs '1703760984'
           observer.disconnect();
+
+          const queryApi = new InfluxDB({url, token}).getQueryApi(org)
+          const fluxQuery = `from(bucket:"pixl") |> range(start: -1000y) |> filter(fn: (r) => r._field == "path" and r._value == "${match[1]}")`
+
+          function queryRows() {
+            console.log('*** QueryRows ***')
+            queryApi.queryRows(fluxQuery, {
+              next: (row: string[], tableMeta: FluxTableMetaData) => {
+                // the following line creates an object for each row
+                const o = tableMeta.toObject(row)
+                // console.log(JSON.stringify(o, null, 2))
+                console.log(
+                  `${o.IP} at '${o.realtime}'`
+                )
+          
+                // alternatively, you can get only a specific column value without
+                // the need to create an object for every row
+                // console.log(tableMeta.get(row, 'time'))
+              },
+              error: (error: Error) => {
+                console.error(error)
+                console.log('\nQueryRows ERROR')
+              },
+              complete: () => {
+                console.log('\nQueryRows SUCCESS')
+              },
+            })
+          }
+          queryRows()
+
+
+
+
+
           return;
         }
       }
@@ -75,3 +111,63 @@ const observer = new MutationObserver((mutationsList, observer) => {
 });
 
 observer.observe(document, { childList: true, subtree: true });
+
+
+
+
+
+
+// There are more ways of how to receive results,
+// the essential ones are shown in functions below.
+// Execution of a particular function follows
+// its definition, comment/uncomment it at will.
+// See also rxjs-query.ts and queryWithParams.mjs .
+
+// Execute query and receive table metadata and table row values using async iterator.
+// async function iterateRows() {
+//   console.log('*** IterateRows ***')
+//   for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
+//     // the following line creates an object for each row
+//     const o = tableMeta.toObject(values)
+//     console.log(o)
+//     // console.log(JSON.stringify(o, null, 2))
+//     console.log(
+//       `${o.path} ${o.IP} in '${o.realtime}' (${o.time})`
+//     )
+
+//     // alternatively, you can get only a specific column value without
+//     // the need to create an object for every row
+//     // console.log(tableMeta.get(row, '_time'))
+//   }
+//   console.log('\nIterateRows SUCCESS')
+// }
+// iterateRows().catch((error) => console.error('IterateRows ERROR', error))
+
+// Execute query and receive table metadata and rows in a result observer.
+
+
+// Execute query and receive result CSV lines in an observer
+// function queryLines() {
+//   queryApi.queryLines(fluxQuery, {
+//     next: (line: string) => {
+//       console.log(line)
+//     },
+//     error: (error: Error) => {
+//       console.error(error)
+//       console.log('\nQueryLines ERROR')
+//     },
+//     complete: () => {
+//       console.log('\nQueryLines SUCCESS')
+//     },
+//   })
+// }
+// queryLines()
+
+// Execute query and receive result csv lines using async iterable
+// async function iterateLines() {
+//   for await (const line of queryApi.iterateLines(fluxQuery)) {
+//     console.log(line)
+//   }
+//   console.log('\nIterateLines SUCCESS')
+// }
+// iterateLines().catch((error) => console.error('\nIterateLines ERROR', error))

@@ -32,6 +32,8 @@ stop prop
 # add options page
 
 insert influxdb info here; ie url @ trackingPixelSrc
+bucket name, org name
+and influxdb key for reading bucket
 
 # checking if tracked. have lil number indicator for now with hits
 
