@@ -42,3 +42,36 @@ document.body.addEventListener('click', function(e) {
   target.dispatchEvent(clickEvent);
 }
 }, true); // Set the third argument to true to register the event listener in the capturing phase
+
+// check for existing and log id
+
+// stuff still loads after this, and the query selector is def correct (working on live page)
+// window.onload = () => {
+//   const imgTag = document.querySelector('img[src*="pixl-server.vercel.app"]');
+
+//   if (imgTag) {
+//     console.log(imgTag.outerHTML); // Outputs the entire <img> tag where src contains 'pixl-server.vercel.app'
+//   } else {
+//     console.log('No <img> tag with src containing "pixl-server.vercel.app" found');
+//   }
+// };
+
+
+const observer = new MutationObserver((mutationsList, observer) => {
+  for(let mutation of mutationsList) {
+    if(mutation.addedNodes.length) {
+      const imgTag = document.querySelector('img[src*="pixl-server.vercel.app"]');
+      if (imgTag) {
+        const src = imgTag.getAttribute('src');
+        const match = src.match(/pixl-server\.vercel\.app\/(\d+)\.png/);
+        if (match) {
+          console.log(match[1]); // Outputs '1703760984'
+          observer.disconnect();
+          return;
+        }
+      }
+    }
+  }
+});
+
+observer.observe(document, { childList: true, subtree: true });

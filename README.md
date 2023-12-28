@@ -29,7 +29,17 @@ stop prop
   * let div = document.querySelector('div[aria-label="Message Body"]');
   * div.insertAdjacentHTML('beforeend', '<img id="snvTrackImg" src="https://igafnl.com/track/1703560904723.png?eId=239511392&amp;eId2=1769716410" width="1" height="1" alt="">');
 * continue prop
+# add options page
 
+insert influxdb info here; ie url @ trackingPixelSrc
+
+# checking if tracked. have lil number indicator for now with hits
+
+if img with id=boo, it's tracked
+
+
+within div dir="ltr", search https://pixl-server.vercel.app/ and get ID from that
+<img id="m_4809587507988088509boo" src="https://ci3.googleusercontent.com/meips/ADKq_NaNE65hdXdYJLsSbR9Ka612qwMKBYwDYOGeBJHAHjBHFWkvoQmXluX2k2GzNh5CTnmMTRL5koeIBD8owRHOSKyzR3A=s0-d-e1-ft#https://pixl-server.vercel.app/1703760984.png" width="2" height="3" alt="" class="CToWUd" data-bit="iit">
 
 # todo
 * don't load urself! don't want it to count as "read" / "accessed" if it's just me opening the email
