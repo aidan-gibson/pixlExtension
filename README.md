@@ -32,12 +32,14 @@ stop prop
 
 
 # todo
+* don't load urself! don't want it to count as "read" / "accessed" if it's just me opening the email
 what about replies
 what if u hit Send but u don't have To field filled out, or if u don't have a subject and/or body?
 what if it doesn't send due to network error? 
 * cmd + enter to send is also a thing...okay i should REALLY be hooking into the send script, like what runs when that button is pressed, instead of current method
 * test apple mail and other providers that allegedly block pixels
 * does providing ip address to ppl violate some data laws?
+* mailtrack does base64 content encoding, maybe should do that too?
 
 # tests
 * send multiple messages in one go
