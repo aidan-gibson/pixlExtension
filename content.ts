@@ -2,6 +2,7 @@ import type { PlasmoCSConfig } from "plasmo"
 import {InfluxDB} from '@influxdata/influxdb-client'
 import type { FluxTableMetaData } from '@influxdata/influxdb-client';
 import {url, token, org} from './env.mjs'
+
 export const config: PlasmoCSConfig = {
   matches: ["https://mail.google.com/*"],
 }
@@ -58,7 +59,7 @@ document.body.addEventListener('click', function(e) {
 //   }
 // };
 
-
+// if there's already a tracking pixel...
 const observer = new MutationObserver((mutationsList, observer) => {
   for(let mutation of mutationsList) {
     if(mutation.addedNodes.length) {
@@ -71,34 +72,32 @@ const observer = new MutationObserver((mutationsList, observer) => {
           observer.disconnect();
 
           const queryApi = new InfluxDB({url, token}).getQueryApi(org)
-          const fluxQuery = `from(bucket:"pixl") |> range(start: -1000y) |> filter(fn: (r) => r._field == "path" and r._value == "${match[1]}")`
+          // const fluxQuery = `from(bucket:"pixl") |> range(start: -1000y) |> filter(fn: (r) => r._field == "path" and r._value == "${match[1]}")`
+          // const fluxQuery = `from(bucket:"pixl") |> range(start: -1000y) |> filter(fn: (r) => r._field == "path" and r._value == "${match[1]}") |> sort(columns: ["epoch"], desc: true)`
+          // TODO add filter filter by measurement "pixl" as well. delete other measurements
+          // const fluxQuery = `from(bucket:"pixl") 
+          //          |> range(start: -1000y) 
+          //          |> filter(fn: (r) => r._field == "path" and r._value == "${match[1]}") 
+          //          |> filter(fn: (r) => exists r.epoch) 
+          //          |> sort(columns: ["epoch"], desc: true)`
+          const fluxQuery = `from(bucket:"pixl") 
+                   |> range(start: -1000y)
+                   |> filter(fn: (r) => r._measurement == "pixl") 
+                   |> filter(fn: (r) => r._field == "path" and r._value == "${match[1]}")
+                   |> sort(columns: ["_time"], desc: true)`
 
-          function queryRows() {
-            console.log('*** QueryRows ***')
-            queryApi.queryRows(fluxQuery, {
-              next: (row: string[], tableMeta: FluxTableMetaData) => {
-                // the following line creates an object for each row
-                const o = tableMeta.toObject(row)
-                // console.log(JSON.stringify(o, null, 2))
-                console.log(
-                  `${o.IP} at '${o.realtime}'`
-                )
-          
-                // alternatively, you can get only a specific column value without
-                // the need to create an object for every row
-                // console.log(tableMeta.get(row, 'time'))
-              },
-              error: (error: Error) => {
-                console.error(error)
-                console.log('\nQueryRows ERROR')
-              },
-              complete: () => {
-                console.log('\nQueryRows SUCCESS')
-              },
-            })
+          async function iterateRows() {
+            console.log('*** IterateRows ***')
+            let results: { [key: string]: string } = {};
+            for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
+              const o = tableMeta.toObject(values)
+              results[o._time] = o.IP;
+            }
+            const sortedKeys = Object.keys(results).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+            sortedKeys.forEach(key => console.log(`${results[key]} at ${key}`));
+            console.log('\nIterateRows SUCCESS')
           }
-          queryRows()
-
+          iterateRows()
 
 
 
