@@ -32,8 +32,12 @@ stop prop
 
 
 # todo
-turn url and querySelector paths into variables at top
 what about replies
+what if u hit Send but u don't have To field filled out, or if u don't have a subject and/or body?
+what if it doesn't send due to network error? 
+* cmd + enter to send is also a thing...okay i should REALLY be hooking into the send script, like what runs when that button is pressed, instead of current method
+* test apple mail and other providers that allegedly block pixels
+* does providing ip address to ppl violate some data laws?
 
 # tests
 * send multiple messages in one go
@@ -73,11 +77,4 @@ what about replies
     * target safari-mv3 and use below tool to convert
     * https://developer.apple.com/documentation/safariservices/safari_web_extensions/converting_a_web_extension_for_safari
 
-
-
-send button
-
-<div id=":6c" class="T-I J-J5-Ji aoO v7 T-I-atl L3" role="button" tabindex="1" data-tooltip="Send ‪(⌘Enter)‬" aria-label="Send ‪(⌘Enter)‬" data-tooltip-delay="800" jslog="32601; u014N:xr6bB,cOuCgd,Kr2w4b; dYFj7e:true; 11:WyIjbXNnLWE6ci0zNTE5OTg0NjA4OTU4NjgzODQxIixudWxsLG51bGwsbnVsbCwxLG51bGwsWyIjdGhyZWFkLWE6cjI1ODkyMTgzNTE5MDIxODY1NjMiXSwwLG51bGwsbnVsbCwwLG51bGwsbnVsbCwwXQ.." style="user-select: none;">Send</div>
-
-<div id=":78" class="T-I J-J5-Ji aoO v7 T-I-atl L3 T-I-Zf-aw2" role="button" tabindex="1" data-tooltip="Send ‪(⌘Enter)‬" aria-label="Send ‪(⌘Enter)‬" data-tooltip-delay="800" jslog="32601; u014N:xr6bB,cOuCgd,Kr2w4b; dYFj7e:true; 11:WyIjbXNnLWE6cjYwOTY0Nzk5NjEwNjQ5NTI3NTIiLG51bGwsbnVsbCxudWxsLDEsbnVsbCxbIiN0aHJlYWQtYTpyNTg3NTA0NzExMTI0NTAzMTc4NyJdLDAsbnVsbCxudWxsLDAsbnVsbCxudWxsLDBd" style="user-select: none;">Send</div>
 
