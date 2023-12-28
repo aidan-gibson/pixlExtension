@@ -60,51 +60,62 @@ document.body.addEventListener('click', function(e) {
 // };
 
 // if there's already a tracking pixel...
-const observer = new MutationObserver((mutationsList, observer) => {
-  for(let mutation of mutationsList) {
-    if(mutation.addedNodes.length) {
-      const imgTag = document.querySelector('img[src*="pixl-server.vercel.app"]');
-      if (imgTag) {
-        const src = imgTag.getAttribute('src');
-        const match = src.match(/pixl-server\.vercel\.app\/(\d+)\.png/);
-        if (match) {
-          console.log(match[1]); // Outputs '1703760984'
-          observer.disconnect();
+// TODO is wrapping this entire thing in onload silly bc MutationObserver is already there?
 
-          const queryApi = new InfluxDB({url, token}).getQueryApi(org)
-
-          const fluxQuery = `from(bucket:"pixl") 
-                   |> range(start: -1000y)
-                   |> filter(fn: (r) => r._measurement == "pixl") 
-                   |> filter(fn: (r) => r._field == "path" and r._value == "${match[1]}")
-                   |> sort(columns: ["_time"], desc: true)`
-
-          async function iterateRows() {
-            console.log('*** IterateRows ***')
-            let results: { [key: string]: string } = {};
-            for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
-              const o = tableMeta.toObject(values)
-              results[o._time] = o.IP;
+  const observer = new MutationObserver((mutationsList, observer) => {
+    for(let mutation of mutationsList) {
+      if(mutation.addedNodes.length) {
+        const imgTag = document.querySelector('img[src*="pixl-server.vercel.app"]');
+        if (imgTag) {
+          const src = imgTag.getAttribute('src');
+          const match = src.match(/pixl-server\.vercel\.app\/(\d+)\.png/);
+          if (match) {
+            console.log(match[1]); // Outputs '1703760984'
+            observer.disconnect();
+            // TODO UI insert
+            console.log('reached UI insert')
+            let UIselect = document.querySelector('span.g3');
+            if (UIselect) {
+              let elem: Element = document.createElement('p');
+              elem.textContent = 'Tracked';
+              UIselect.insertAdjacentElement("beforebegin",elem);
+              console.log("found class hj")
             }
-            const sortedKeys = Object.keys(results).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-            sortedKeys.forEach(key => console.log(`${results[key]} at ${key}`));
-            console.log('\nIterateRows SUCCESS')
+            if (!UIselect) {
+              console.log("didn't find class hj");
+            }
+            const queryApi = new InfluxDB({url, token}).getQueryApi(org)
+
+            const fluxQuery = `from(bucket:"pixl") 
+                     |> range(start: -1000y)
+                     |> filter(fn: (r) => r._measurement == "pixl") 
+                     |> filter(fn: (r) => r._field == "path" and r._value == "${match[1]}")
+                     |> sort(columns: ["_time"], desc: true)`
+
+            async function iterateRows() {
+              console.log('*** IterateRows ***')
+              let results: { [key: string]: string } = {};
+              for await (const {values, tableMeta} of queryApi.iterateRows(fluxQuery)) {
+                const o = tableMeta.toObject(values)
+                results[o._time] = o.IP;
+              }
+              const sortedKeys = Object.keys(results).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+              sortedKeys.forEach(key => console.log(`${results[key]} at ${key}`));
+              console.log('\nIterateRows SUCCESS')
+            }
+            iterateRows()
+
+
+
+            return;
           }
-          iterateRows()
-
-          // TODO UI insert
-          let UIselect = document.querySelector('div.hj');
-          UIselect.insertAdjacentHTML("afterbegin","<p>Tracked</p>");
-
-
-          return;
         }
       }
     }
-  }
-});
+  });
 
-observer.observe(document, { childList: true, subtree: true });
+  observer.observe(document, { childList: true, subtree: true });
+
 
 
 
